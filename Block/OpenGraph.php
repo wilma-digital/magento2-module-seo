@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 /**
  * Copyright © 2017 Stämpfli AG. All rights reserved.
  * @author marcel.hauri@staempfli.com
@@ -10,26 +12,39 @@ namespace Staempfli\Seo\Block;
 use Magento\Framework\View\Element\Template;
 use Staempfli\Seo\Model\AdapterInterface;
 
+/**
+ * OpenGraph meta tags block
+ */
 class OpenGraph extends Template implements SeoBlockInterface
 {
     /**
      * @var AdapterInterface
      */
-    private $adapter;
+    private AdapterInterface $adapter;
 
+    /**
+     * Initialize dependencies
+     *
+     * @param Template\Context $context
+     * @param AdapterInterface $adapter
+     * @param array $data
+     */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
+        Template\Context $context,
         AdapterInterface $adapter,
-        array $data = []
+        array $data = [],
     ) {
         parent::__construct($context, $data);
+
         $this->adapter = $adapter;
     }
 
     /**
+     * Get OpenGraph meta data HTML
+     *
      * @return string
      */
-    public function getMetaData()
+    public function getMetaData(): string
     {
         $property = $this->adapter->getProperty();
         $openGraph = $property
@@ -44,7 +59,7 @@ class OpenGraph extends Template implements SeoBlockInterface
         return sprintf(
             '%s%s',
             $openGraph,
-            $productInformation
+            $productInformation,
         );
     }
 }

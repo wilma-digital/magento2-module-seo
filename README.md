@@ -1,11 +1,13 @@
 # Magento 2 Search Engine Optimization
-[![Project Status: Abandoned – Initial development has started, but there has not yet been a stable, usable release; the project has been abandoned and the author(s) do not intend on continuing development.](http://www.repostatus.org/badges/latest/abandoned.svg)](http://www.repostatus.org/#abandoned)
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7efcb7346522430a85e5dd5298ebe9ff)](https://www.codacy.com/app/Staempfli/magento2-module-seo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=staempfli/magento2-module-seo&amp;utm_campaign=Badge_Grade)
-[![Build Status](https://travis-ci.org/staempfli/magento2-module-seo.svg?branch=master)](https://travis-ci.org/staempfli/magento2-module-seo)
 [![Maintainability](https://api.codeclimate.com/v1/badges/7c22812c1bfe894a2e00/maintainability)](https://codeclimate.com/github/staempfli/magento2-module-seo/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/7c22812c1bfe894a2e00/test_coverage)](https://codeclimate.com/github/staempfli/magento2-module-seo/test_coverage)
 
 Magento 2 Module to Improve Search Engine Optimization (SEO) on your Magento site.
+
+**Compatible with Magento 2.4.7 and 2.4.8**
+**Compatible with Hyvä Theme**
 
 
 ## Installation
@@ -116,10 +118,38 @@ Allowing you to set the verification code in the backend for:
 
 See: [Robots Configuration](docs/Robots.md)
 
+## Hyvä Theme Compatibility
+
+**This module is fully compatible with Hyvä Theme out of the box!**
+
+The module uses server-side PHP rendering for all SEO meta tags without any JavaScript, CSS, or Luma theme dependencies. This means:
+
+- No JavaScript files to worry about
+- No CSS/LESS files that need adaptation
+- No RequireJS dependencies
+- No Knockout.js templates
+- Pure PHP templates that generate meta tags
+
+**What this means for Hyvä users:**
+- Works seamlessly with Hyvä's TailwindCSS approach
+- No need for compatibility modules or patches
+- All SEO features (OpenGraph, Twitter Cards, HrefLang) work as expected
+- Server-side rendering ensures optimal performance
+
+Simply install the module and it will work with both Luma and Hyvä themes without any additional configuration.
+
 ## Requirements
 
-- PHP: > 7.0
-- Magento 2.2.x | 2.3.x
+- PHP: 8.1, 8.2, or 8.3
+- Magento 2.4.7 or 2.4.8
+
+### Compatibility Matrix
+
+| Magento Version | PHP Version | Module Version | Hyvä Compatible |
+|----------------|-------------|----------------|-----------------|
+| 2.4.7          | 8.1 - 8.3   | Latest         | ✓               |
+| 2.4.8          | 8.1 - 8.3   | Latest         | ✓               |
+| 2.2.x - 2.3.x  | 7.0 - 7.2   | 1.6.1          | N/A             |
 
 Support
 -------

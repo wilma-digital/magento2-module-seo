@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 /**
  * Copyright © 2018 Stämpfli AG. All rights reserved.
  * @author marcel.hauri@staempfli.com
@@ -11,98 +13,127 @@ namespace Staempfli\Seo\Block;
 use Magento\Framework\View\Element\Template;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\Group;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\Website;
+use Staempfli\Seo\Service\HrefLang\AlternativeUrlService;
 
+/**
+ * HrefLang alternate links block
+ */
 class HrefLang extends Template
 {
     /**
-     * @var \Staempfli\Seo\Service\HrefLang\AlternativeUrlService
+     * @var AlternativeUrlService
      */
-    private $alternativeUrlService;
+    private AlternativeUrlService $alternativeUrlService;
 
+    /**
+     * Initialize dependencies
+     *
+     * @param Template\Context $context
+     * @param AlternativeUrlService $alternativeUrlService
+     * @param array $data
+     */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Staempfli\Seo\Service\HrefLang\AlternativeUrlService $alternativeUrlService,
-        array $data = []
+        Template\Context $context,
+        AlternativeUrlService $alternativeUrlService,
+        array $data = [],
     ) {
         parent::__construct($context, $data);
+
         $this->alternativeUrlService = $alternativeUrlService;
     }
 
     /**
-     * @return array in format [en_us => $url] or [en => $url]
+     * Get alternative URLs for all active stores
+     *
+     * @return array Array in format [en-us => $url] or [en => $url]
      */
-    public function getAlternatives()
+    public function getAlternatives(): array
     {
         $data = [];
+
         foreach ($this->getStores() as $store) {
-            if($store->isActive()) {
+            if ($store->isActive()) {
                 $url = $this->getStoreUrl($store);
+
                 if ($url) {
                     $data[$this->getLocaleCode($store)] = $url;
                 }
             }
         }
+
         return $data;
     }
 
     /**
-     * @param Store $store
+     * Get alternative URL for specific store
+     *
+     * @param StoreInterface $store
      * @return string
      */
-    private function getStoreUrl($store)
+    private function getStoreUrl(StoreInterface $store): string
     {
         return $this->alternativeUrlService->getAlternativeUrl($store);
     }
 
     /**
-     * @param StoreInterface $store
-     * @return bool
-     */
-    private function isCurrentStore($store)
-    {
-        return $store->getId() == $this->_storeManager->getStore()->getId();
-    }
-
-    /**
+     * Get locale code for store
+     *
      * @param StoreInterface $store
      * @return string
      */
-    private function getLocaleCode($store)
+    private function getLocaleCode(StoreInterface $store): string
     {
-        $localeCode = $this->_scopeConfig->getValue('seo/hreflang/locale_code', 'stores', $store->getId())
-            ?: $this->_scopeConfig->getValue('general/locale/code', 'stores', $store->getId());
-        return str_replace('_', '-', strtolower($localeCode));
+        $localeCode = $this->_scopeConfig->getValue(
+            'seo/hreflang/locale_code',
+            ScopeInterface::SCOPE_STORES,
+            $store->getId(),
+        ) ?: $this->_scopeConfig->getValue(
+            'general/locale/code',
+            ScopeInterface::SCOPE_STORES,
+            $store->getId(),
+        );
+
+        return str_replace('_', '-', strtolower((string) $localeCode));
     }
 
     /**
+     * Get stores based on configuration
+     *
      * @return Store[]
      */
-    private function getStores()
+    private function getStores(): array
     {
         if ($this->_scopeConfig->isSetFlag('seo/hreflang/same_website_only')) {
             return $this->getSameWebsiteStores();
         }
+
         return $this->_storeManager->getStores();
     }
 
     /**
+     * Get stores from same website only
+     *
      * @return Store[]
      */
-    private function getSameWebsiteStores()
+    private function getSameWebsiteStores(): array
     {
         $stores = [];
+
         /** @var Website $website */
         $website = $this->_storeManager->getWebsite();
+
         foreach ($website->getGroups() as $group) {
             /** @var Group $group */
             foreach ($group->getStores() as $store) {
-                if($store->isActive()) {
+                if ($store->isActive()) {
                     $stores[] = $store;
                 }
             }
         }
+
         return $stores;
     }
 }

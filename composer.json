@@ -35,5 +35,6 @@
     "psr-4": {
       "Staempfli\\Seo\\": ""
     }
-  }
+  },
+  "version": "1.8.0"
 }

@@ -32,7 +32,18 @@ final class PageTest extends \PHPUnit\Framework\TestCase
         $page->expects($this->once())->method('getTitle')->willReturn('Test');
         $page->expects($this->once())->method('getContent')->willReturn('Test Content');
         $page->expects($this->once())->method('getIdentifier')->willReturn('test');
-        $page->expects($this->once())->method('getData')->willReturn(['test' => 'data']);
+        $page->expects($this->once())->method('getMetaDescription')->willReturn(null);
+        $page->expects($this->any())
+            ->method('getData')
+            ->willReturnCallback(function($key = null) {
+                if ($key === 'og_description') {
+                    return null;
+                }
+                if ($key === null || $key === '') {
+                    return ['test' => 'data'];
+                }
+                return null;
+            });
 
         $urlInterface = $this->getMockBuilder(\Magento\Framework\UrlInterface::class)
             ->disableOriginalConstructor()

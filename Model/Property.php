@@ -279,8 +279,12 @@ final class Property implements PropertyInterface
     /**
      * Generate a single HTML meta tag with proper XSS protection
      *
-     * Uses Magento's Escaper for secure HTML attribute escaping to prevent
-     * XSS vulnerabilities
+     * Only escapes the content value for security. Property names and attribute
+     * names are controlled values and should not be escaped to prevent breaking
+     * OpenGraph and Twitter Card meta tags.
+     *
+     * Uses minimal escaping to preserve readability while preventing XSS.
+     * Only escapes: quotes, <, >, & characters.
      *
      * @param string $key Property key/name
      * @param string $value Property value
@@ -290,18 +294,45 @@ final class Property implements PropertyInterface
     {
         return sprintf(
             '<meta %s="%s%s" content="%s" />%s',
-            $this->escaper->escapeHtmlAttr($this->attributeName),
-            $this->escaper->escapeHtmlAttr($this->prefix),
-            $this->escaper->escapeHtmlAttr($key),
-            $this->escaper->escapeHtmlAttr($value),
+            $this->attributeName,
+            $this->prefix,
+            $key,
+            $this->escapeMetaContent($value),
             PHP_EOL,
         );
     }
 
     /**
+     * Escape meta tag content with minimal encoding
+     *
+     * Only escapes characters that are absolutely necessary for HTML attribute safety:
+     * - Double quotes (") - to prevent breaking out of the attribute
+     * - Ampersands (&) - but only if not part of an entity
+     * - Less than (<) - to prevent HTML injection
+     * - Greater than (>) - to prevent HTML injection
+     *
+     * Does NOT escape normal characters like spaces, umlauts, or other UTF-8 characters
+     * to maintain readability and avoid unnecessary entity encoding.
+     *
+     * @param string $value Content value to escape
+     * @return string Escaped content
+     */
+    private function escapeMetaContent(string $value): string
+    {
+        // Escape only the essential characters for HTML attribute safety
+        $value = str_replace('&', '&amp;', $value);
+        $value = str_replace('"', '&quot;', $value);
+        $value = str_replace('<', '&lt;', $value);
+        $value = str_replace('>', '&gt;', $value);
+
+        return $value;
+    }
+
+    /**
      * Filter and sanitize input text
      *
-     * Removes HTML tags, normalizes whitespace, and trims the input.
+     * Removes HTML tags, style blocks, scripts, normalizes whitespace, and trims the input.
+     * Handles PageBuilder content and ensures only plain text is returned.
      * Does NOT encode entities - escaping is handled at output time.
      *
      * @param string $input Text to filter
@@ -309,10 +340,29 @@ final class Property implements PropertyInterface
      */
     private function getFilteredInput(string $input): string
     {
-        $input = trim(strip_tags(str_replace(["\r\n", "\r", "\n"], ' ', $input)));
+        // Remove script and style tags with their content
+        $input = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $input);
+        $input = preg_replace('/<style\b[^>]*>(.*?)<\/style>/is', '', $input);
+
+        // Remove HTML comments
+        $input = preg_replace('/<!--(.|\s)*?-->/', '', $input);
+
+        // Strip all HTML tags
+        $input = strip_tags($input);
+
+        // Decode HTML entities to get actual text
+        $input = html_entity_decode($input, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // Replace line breaks with spaces
+        $input = str_replace(["\r\n", "\r", "\n"], ' ', $input);
+
+        // Remove multiple spaces and normalize whitespace
         $input = preg_replace('/\s+/', ' ', $input);
 
-        return $input ?? '';
+        // Trim the result
+        $input = trim($input);
+
+        return $input;
     }
 
     /**

@@ -8,7 +8,10 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <section id="seo" translate="label" sortOrder="1000" showInDefault="1" showInWebsite="1" showInStore="1">
+        <section id="seo" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>SEO Optimization</label>
+            <tab>general</tab>
+            <resource>Staempfli_Seo::seo</resource>
             <group id="opengraph" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Open Graph Settings</label>
 
@@ -37,17 +40,17 @@
                 </field>
             </group>
 
-            <group id="twitter" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="twitter_card" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Twitter Card Settings</label>
 
-                <field id="enable" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable Twitter Cards</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
 
-                <field id="card_type" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="type" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Default Card Type</label>
-                    <source_model>Staempfli\Seo\Model\Config\Source\TwitterCardType</source_model>
+                    <source_model>Staempfli\Seo\Model\Config\Source\TwitterCard\Type</source_model>
                     <comment>summary = small image, summary_large_image = large image</comment>
                 </field>
 
@@ -61,6 +64,59 @@
                     <label>Twitter Creator Handle</label>
                     <comment>@username of content creator. Used for attribution.</comment>
                     <validate>validate-twitter-handle</validate>
+                </field>
+            </group>
+
+            <group id="verifications" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Site Verification</label>
+
+                <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Site Verification</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="google" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Google Site Verification</label>
+                    <comment>Enter the verification code from Google Search Console</comment>
+                </field>
+
+                <field id="bing" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Bing Site Verification</label>
+                    <comment>Enter the verification code from Bing Webmaster Tools</comment>
+                </field>
+
+                <field id="pinterest" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Pinterest Site Verification</label>
+                    <comment>Enter the verification code from Pinterest</comment>
+                </field>
+
+                <field id="yandex" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Yandex Site Verification</label>
+                    <comment>Enter the verification code from Yandex Webmaster</comment>
+                </field>
+            </group>
+
+            <group id="robots" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Robots.txt</label>
+
+                <field id="content" translate="label" type="textarea" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Robots.txt Content</label>
+                    <comment><![CDATA[Custom content to append to robots.txt. Leave empty to use default.]]></comment>
+                </field>
+            </group>
+
+            <group id="hreflang" translate="label" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>HrefLang Settings</label>
+
+                <field id="same_website_only" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Same Website Only</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Only show hreflang alternates for stores within the same website</comment>
+                </field>
+
+                <field id="locale_code" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Locale Code</label>
+                    <comment>Override locale code for hreflang (e.g., en-US). Leave empty to use store locale.</comment>
                 </field>
             </group>
         </section>

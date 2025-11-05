@@ -125,6 +125,7 @@ Contributions are welcome! Please:
 ## Credits
 
 Based on [staempfli/magento2-module-seo](https://github.com/staempfli/magento2-module-seo)
+
 Updated and maintained by [WilMa Digital GmbH](https://wilma.tech)
 
 ## License
@@ -134,4 +135,5 @@ Updated and maintained by [WilMa Digital GmbH](https://wilma.tech)
 ## Copyright
 ---------
 (c) 2017, Stämpfli AG
+
 (c) 2025, WilMa Digital GmbH

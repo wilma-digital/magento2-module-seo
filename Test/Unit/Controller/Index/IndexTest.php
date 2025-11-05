@@ -23,41 +23,38 @@ final class IndexTest extends \PHPUnit\Framework\TestCase
      */
     private $controller;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
+
         $robots = $this->getMockBuilder(Robots::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $page = $this->getMockBuilder(\Magento\Framework\Controller\Result\Raw::class)
+
+        $page = $this->getMockBuilder(Raw::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects($this->once())
             ->method('setHeader')
-            ->will($this->returnValue($page));
+            ->with('Content-Type', 'text/plain')
+            ->willReturn($page);
         $page->expects($this->once())
             ->method('setContents')
-            ->will($this->returnValue($page));
+            ->willReturn($page);
 
-        $resultFactory = $this->getMockBuilder(
-            ResultFactory::class
-        )->disableOriginalConstructor()->getMock();
-        $resultFactory->expects($this->once())
-            ->method('create')
-            ->will($this->returnValue($page));
-
-        $context = $this->getMockBuilder(\Magento\Framework\App\Action\Context::class)
+        $resultFactory = $this->getMockBuilder(ResultFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $context->expects($this->once())
-            ->method('getResultFactory')
-            ->will($this->returnValue($resultFactory));
+        $resultFactory->expects($this->once())
+            ->method('create')
+            ->with(ResultFactory::TYPE_RAW)
+            ->willReturn($page);
 
         $this->controller = $objectManager->getObject(
             Index::class,
             [
                 'robots' => $robots,
-                'context' => $context
+                'resultFactory' => $resultFactory
             ]
         );
     }

@@ -18,7 +18,7 @@ final class TwitterCardTest extends AbstractBlockSetup
      */
     private $block;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->block = new TwitterCard(

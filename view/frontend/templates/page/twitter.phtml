@@ -1,0 +1,17 @@
+<?php
+
+declare(strict_types=1);
+
+use Staempfli\Seo\Block\TwitterCard;
+
+/**
+ * Twitter Card meta tags template
+ *
+ * @var TwitterCard $block
+ */
+
+$metaData = $block->getMetaData();
+
+if (!empty($metaData)): ?>
+<?= /* @noEscape */ $metaData ?>
+<?php endif; ?>

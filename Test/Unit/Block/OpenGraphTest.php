@@ -18,7 +18,7 @@ final class OpenGraphTest extends AbstractBlockSetup
      */
     private $block;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->block = new OpenGraph($this->context, $this->adapterInterface, []);

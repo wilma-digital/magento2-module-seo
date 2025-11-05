@@ -21,7 +21,7 @@ final class PageTest extends \PHPUnit\Framework\TestCase
      */
     private $page;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
@@ -32,14 +32,15 @@ final class PageTest extends \PHPUnit\Framework\TestCase
         $page->expects($this->once())->method('getTitle')->willReturn('Test');
         $page->expects($this->once())->method('getContent')->willReturn('Test Content');
         $page->expects($this->once())->method('getIdentifier')->willReturn('test');
+        $page->expects($this->once())->method('getData')->willReturn(['test' => 'data']);
 
         $urlInterface = $this->getMockBuilder(\Magento\Framework\UrlInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $blockFilter = $this->getMockBuilder(\Zend_Filter_Interface::class)
+        $blockFilter = $this->getMockBuilder(\Laminas\Filter\FilterInterface::class)
             ->disableOriginalConstructor()
-            ->setMethods(['filter'])
+            ->onlyMethods(['filter'])
             ->getMock();
         $blockFilter->expects($this->once())->method('filter')->willReturn('Test Content');
         $filterProvider = $this->getMockBuilder(\Magento\Cms\Model\Template\FilterProvider::class)
@@ -65,6 +66,6 @@ final class PageTest extends \PHPUnit\Framework\TestCase
     public function testGetProperty()
     {
         $result = $this->page->getProperty();
-        $this->assertSame(null, $result->hasData());
+        $this->assertFalse($result->hasData());
     }
 }

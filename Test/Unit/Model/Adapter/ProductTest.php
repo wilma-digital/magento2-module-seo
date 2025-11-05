@@ -20,56 +20,78 @@ final class ProductTest extends \PHPUnit\Framework\TestCase
      */
     private $product;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
-        $propertyInterface = new Property();
-        $image = $this->getMockBuilder(\Magento\Catalog\Block\Product\Image::class)
+        $escaper = $this->getMockBuilder(\Magento\Framework\Escaper::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $propertyInterface = new Property($escaper);
+
+        $image = $this->getMockBuilder(\Magento\Catalog\Block\Product\Image::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getData'])
+            ->addMethods(['getImageUrl'])
+            ->getMock();
+        $image->method('getImageUrl')->willReturn('http://example.com/test-product.png');
+
         $imageBuilder = $this->getMockBuilder(\Magento\Catalog\Block\Product\ImageBuilder::class)
             ->disableOriginalConstructor()
             ->getMock();
         $imageBuilder->expects($this->once())
             ->method('setProduct')
-            ->will($this->returnValue($imageBuilder));
+            ->willReturn($imageBuilder);
         $imageBuilder->expects($this->once())
             ->method('setImageId')
-            ->will($this->returnValue($imageBuilder));
+            ->willReturn($imageBuilder);
         $imageBuilder->expects($this->once())
             ->method('setAttributes')
-            ->will($this->returnValue($imageBuilder));
+            ->willReturn($imageBuilder);
         $imageBuilder->expects($this->once())
             ->method('create')
-            ->will($this->returnValue($image));
+            ->willReturn($image);
+
         $product = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
         $product->expects($this->any())
             ->method('getData')
-            ->will($this->returnValue('test'));
-        $product->expects($this->once())
-            ->method('getProductUrl')
-            ->will($this->returnValue('http://example.com/test-product'));
-        $product->expects($this->once())
-            ->method('getImage')
-            ->will($this->returnValue('http://example.com/test-product.png'));
-        $product->expects($this->once())
-            ->method('getImage')
-            ->will($this->returnValue('http://example.com/test-product.png'));
-        $registry = $this->getMockBuilder(\Magento\Framework\Registry::class)
+            ->will($this->returnCallback(function($key = null) {
+                if ($key === null || $key === '') {
+                    return ['name' => 'Test Product'];
+                }
+                if ($key === 'meta_description') {
+                    return 'Test meta description';
+                }
+                return null;
+            }));
+        $product->method('getName')->willReturn('Test Product');
+        $product->method('getProductUrl')->willReturn('http://example.com/test-product');
+        $product->method('getImage')->willReturn('test-image.jpg');
+        $product->method('getFinalPrice')->willReturn('99.99');
+
+        $productRepository = $this->getMockBuilder(\Magento\Catalog\Api\ProductRepositoryInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $registry->expects($this->once())
-            ->method('registry')
-            ->will($this->returnValue($product));
+        $productRepository->method('getById')->willReturn($product);
+
+        $request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $request->method('getParam')->with('id')->willReturn('123');
+
+        $logger = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->product = $objectManager->getObject(
             Product::class,
             [
-                'propertyInterface' => $propertyInterface,
+                'property' => $propertyInterface,
                 'imageBuilder' => $imageBuilder,
-                'registry' => $registry
+                'productRepository' => $productRepository,
+                'request' => $request,
+                'logger' => $logger
             ]
         );
     }
@@ -77,6 +99,6 @@ final class ProductTest extends \PHPUnit\Framework\TestCase
     public function testGetProperty()
     {
         $result = $this->product->getProperty();
-        $this->assertSame(null, $result->hasData());
+        $this->assertTrue($result->hasData());
     }
 }

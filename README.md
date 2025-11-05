@@ -9,164 +9,129 @@ Magento 2 Module to Improve Search Engine Optimization (SEO) on your Magento sit
 **Compatible with Magento 2.4.7 and 2.4.8**
 **Compatible with Hyvä Theme**
 
-
 ## Installation
 
-Install the module via composer like so:
-
 ```sh
-composer require staempfli/magento2-module-seo
+composer require staempfli/magento2-module-seo "^1.8"
+php bin/magento module:enable Staempfli_Seo
+php bin/magento setup:upgrade
+php bin/magento setup:di:compile
+php bin/magento setup:static-content:deploy
+php bin/magento cache:flush
 ```
 
-For Magento 2.1.x use release [1.6.1](https://github.com/staempfli/magento2-module-seo/releases/tag/1.6.1)
+## Configuration
 
-```sh
-composer require staempfli/magento2-module-seo:1.6.1
-```
+Navigate to: **Stores > Configuration > SEO**
 
+### Open Graph Settings
 
-## Usage
+1. **Enable Open Graph**: Enable/Disable OG tags globally
+2. **Site Name**: Your brand name (used as og:site_name)
+3. **Default Image**: Fallback image (1200x630px recommended)
+4. **Product Image**: Which product image to use for OG
 
-The Module will automatically optimize and improve the performance of your Magento-based store in Search Engines.
+### Twitter Card Settings
 
-By Adding: 
+1. **Enable Twitter Cards**: Enable/Disable Twitter Cards
+2. **Card Type**:
+    - `summary`: Small square image
+    - `summary_large_image`: Large landscape image (recommended for most cases)
+3. **Twitter Site**: Your Twitter handle (e.g., @wilmadigital)
+4. **Twitter Creator**: Content creator Twitter handle
 
-- [TwitterCards](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started)
-   - For CMS Pages
-        ```html
-        <meta name="twitter:title" content="Home page" />
-        <meta name="twitter:description" content="CMS homepage content goes here." />
-        <meta name="twitter:url" content="http://example.com/" />
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@StaempfliWeb" />
-        <meta name="twitter:creator" content="@mhauri" />
-        ```
+### Per-Page Configuration
 
-    - For Categories
-        ```html
-        <meta name="twitter:title" content="Demo Category" />
-        <meta name="twitter:url" content="http://example.com/demo-category.html" />
-        <meta name="twitter:description" content="This is a Demo Category" />
-        <meta name="twitter:image" content="http://example.com/media/catalog/category/demo.png" />
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@StaempfliWeb" />
-        <meta name="twitter:creator" content="@mhauri" />
-        ```
+For CMS Pages, go to **Content > Pages > [Your Page] > Open Graph**
 
-    - For Products
-        ```html
-        <meta name="twitter:title" content="Demo Product" />
-        <meta name="twitter:description" content="Demo Product Short Description" />
-        <meta name="twitter:image" content="http://example.com/media/catalog/product/cache/0f831c1845fc143d00d6d1ebc49f446a/o/p/demo.png" />
-        <meta name="twitter:url" content="http://example.com/demo-product.html" />
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@StaempfliWeb" />
-        <meta name="twitter:creator" content="@mhauri" />
-        ```
-    
-- [Structured Data](http://ogp.me/)
+- **OG Title**: Override default title (optional)
+- **OG Description**: Override meta description (optional)
+- **OG Image**: Upload custom image for this page (1200x630px)
 
-    - For CMS Pages
-        ```html
-        <meta property="og:title" content="Home page" />
-        <meta property="og:description" content="CMS homepage content goes here." />
-        <meta property="og:url" content="http://example.com/" />
-        ```
-        
-    - For Categories
-        ```html
-        <meta property="og:title" content="Demo Category" />
-        <meta property="og:url" content="http://example.com/demo-category.html" />
-        <meta property="og:description" content="This is a Demo Category" />
-        <meta property="og:image" content="http://example.com/media/catalog/category/demo.png" />
-        ```
-          
-    - For Products
-        ```html
-        <meta property="og:title" content="Demo Product" />
-        <meta property="og:description" content="Demo Product Short Description" />
-        <meta property="og:image" content="http://example.com/media/catalog/product/cache/0f831c1845fc143d00d6d1ebc49f446a/o/p/demo.png" />
-        <meta property="og:url" content="http://example.com/demo-product.html" />
-        <meta property="og:type" content="og:product" />
-        <meta property="product:price:amount" content="125.5" />
-        <meta property="product:price:currency" content="CHF"/>
-        ```
+## Features
 
-- [Language annotations](https://support.google.com/webmasters/answer/189077?hl=en)
-    ```html
-    <link rel="alternate" hreflang="fr" href="http://example.com/fr/content-pages/demo.html" />
-    <link rel="alternate" hreflang="en" href="http://example.com/en/content-pages/demo.html" />
-    ```
-## Webmaster Tools
-Allowing you to set the verification code in the backend for:
+✅ Open Graph meta tags for Products, Categories, CMS Pages
+✅ Twitter Card meta tags
+✅ Per-page OG image control
+✅ Admin configuration for defaults
+✅ Hreflang tags for multi-language
+✅ Search engine verification codes
+✅ Hyvä Theme compatible (server-side rendering)
+✅ Magento 2.4.7+ compatible
 
-- Google Webmaster Tools
-- Bing Webmaster Tools
-- Pinterest
-- Yandex webmaster Tools
+## Hyvä Compatibility
 
-![Search Engine Optimization](docs/assets/configuration.png)
+This module is **100% compatible with Hyvä Theme** out of the box!
 
-```html
-<meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE" />
-<meta name="msvalidate.01" content="YOUR_BING_VERIFICATION_CODE" />
-<meta name="p:domain_verify" content="YOUR_PINTEREST_VERIFICATION_CODE" />
-<meta name="yandex-verification" content="YOUR_YANDEX_VERIFICATION_CODE" />
-```
+Why it works:
+- Pure server-side PHP rendering
+- No JavaScript dependencies
+- No CSS/LESS files
+- No RequireJS or Knockout.js
+- Works with both Luma and Hyvä
 
-## Robots (robots.txt)
+## Testing Your Implementation
 
-See: [Robots Configuration](docs/Robots.md)
+### Google Rich Results Test
+https://search.google.com/test/rich-results
 
-## Hyvä Theme Compatibility
+### Facebook Sharing Debugger
+https://developers.facebook.com/tools/debug/
 
-**This module is fully compatible with Hyvä Theme out of the box!**
+### LinkedIn Post Inspector
+https://www.linkedin.com/post-inspector/
 
-The module uses server-side PHP rendering for all SEO meta tags without any JavaScript, CSS, or Luma theme dependencies. This means:
+### Twitter Card Validator
+https://cards-dev.twitter.com/validator
 
-- No JavaScript files to worry about
-- No CSS/LESS files that need adaptation
-- No RequireJS dependencies
-- No Knockout.js templates
-- Pure PHP templates that generate meta tags
+## Best Practices
 
-**What this means for Hyvä users:**
-- Works seamlessly with Hyvä's TailwindCSS approach
-- No need for compatibility modules or patches
-- All SEO features (OpenGraph, Twitter Cards, HrefLang) work as expected
-- Server-side rendering ensures optimal performance
+### OG Images
+- **Size**: 1200x630px (optimal for all platforms)
+- **Format**: JPG or PNG
+- **File size**: < 1MB recommended
+- **Content**: Include logo, headline, brand elements
 
-Simply install the module and it will work with both Luma and Hyvä themes without any additional configuration.
+### Titles
+- **Length**: 60-70 characters optimal
+- **Format**: "Page Title | Brand Name"
+- **Avoid**: Keyword stuffing
 
-## Requirements
+### Descriptions
+- **Length**: 150-160 characters optimal
+- **Content**: Clear value proposition
+- **CTA**: Include call-to-action when relevant
 
-- PHP: 8.1, 8.2, or 8.3
-- Magento 2.4.7 or 2.4.8
+## Troubleshooting
 
-### Compatibility Matrix
+### OG Image not showing on LinkedIn
+- Clear LinkedIn cache using Post Inspector
+- Ensure image is publicly accessible
+- Check image dimensions (must be at least 200x200)
 
-| Magento Version | PHP Version | Module Version | Hyvä Compatible |
-|----------------|-------------|----------------|-----------------|
-| 2.4.7          | 8.1 - 8.3   | Latest         | ✓               |
-| 2.4.8          | 8.1 - 8.3   | Latest         | ✓               |
-| 2.2.x - 2.3.x  | 7.0 - 7.2   | 1.6.1          | N/A             |
+### Twitter Card not rendering
+- Verify Twitter Site handle is correct (include @)
+- Use Twitter Card Validator to debug
+- Ensure card type is set correctly
 
-Support
--------
-If you have any issues with this extension, open an issue on [GitHub](https://github.com/staempfli/magento2-module-seo/issues).
+## Contributing
 
-Contribution
-------------
-Any contribution is highly appreciated. The best way to contribute code is to open a [pull request on GitHub](https://help.github.com/articles/using-pull-requests).
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create feature branch
+3. Make your changes
+4. Submit Pull Request
 
-Developer
----------
-Marcel Hauri, and all other [contributors](https://github.com/staempfli/magento2-module-seo/contributors)
+## Credits
 
-License
+Based on [staempfli/magento2-module-seo](https://github.com/staempfli/magento2-module-seo)
+Updated and maintained by [WilMa Digital GmbH](https://wilma.tech)
+
+## License
 -------
 [Open Software License ("OSL") v. 3.0](https://opensource.org/licenses/OSL-3.0)
 
-Copyright
+## Copyright
 ---------
 (c) 2017, Stämpfli AG
+(c) 2025,1, t WilMa Digital GmbH

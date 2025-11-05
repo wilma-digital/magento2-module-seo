@@ -20,7 +20,7 @@ final class ConfigTest extends \PHPUnit\Framework\TestCase
      */
     private $config;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $scopeConfigInterface = $this->getMockBuilder(ScopeConfigInterface::class)
             ->disableOriginalConstructor()

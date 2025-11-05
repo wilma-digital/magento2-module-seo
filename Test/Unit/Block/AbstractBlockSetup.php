@@ -1,52 +1,93 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Copyright © 2018 Stämpfli AG. All rights reserved.
  * @author marcel.hauri@staempfli.com
  */
+
 namespace Staempfli\Seo\Test\Unit\Block;
 
+use Magento\Framework\Escaper;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\View\Element\Template\Context;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Staempfli\Seo\Model\AdapterInterface;
 use Staempfli\Seo\Model\Config;
 use Staempfli\Seo\Model\Property;
+use Staempfli\Seo\Model\PropertyInterface;
 
-abstract class AbstractBlockSetup extends \PHPUnit\Framework\TestCase
+/**
+ * Abstract test setup for Block tests
+ *
+ * Provides common mock objects and setup for testing Block classes
+ */
+abstract class AbstractBlockSetup extends TestCase
 {
     /**
      * @var ObjectManager
      */
-    protected $objectManager;
+    protected ObjectManager $objectManager;
 
     /**
-     * @var \Magento\Framework\View\Element\Template\Context|\PHPUnit_Framework_MockObject_MockObject
+     * @var Context|MockObject
      */
-    protected $context;
-    /**
-     * @var \Staempfli\Seo\Model\Config|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $config;
-    /**
-     * @var \Staempfli\Seo\Model\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $adapterInterface;
-    /**
-     * @var \Staempfli\Seo\Model\PropertyInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $propertyInterface;
+    protected Context|MockObject $context;
 
-    public function setUp()
+    /**
+     * @var Config|MockObject
+     */
+    protected Config|MockObject $config;
+
+    /**
+     * @var AdapterInterface|MockObject
+     */
+    protected AdapterInterface|MockObject $adapterInterface;
+
+    /**
+     * @var PropertyInterface
+     */
+    protected PropertyInterface $propertyInterface;
+
+    /**
+     * @var Escaper|MockObject
+     */
+    protected Escaper|MockObject $escaperMock;
+
+    /**
+     * Set up test dependencies
+     *
+     * @return void
+     */
+    protected function setUp(): void
     {
         $this->objectManager = new ObjectManager($this);
-        $this->context = $this->getMockBuilder(\Magento\Framework\View\Element\Template\Context::class)
+
+        $this->context = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()
             ->getMock();
+
         $this->config = $this->getMockBuilder(Config::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->propertyInterface = new Property();
+
+        $this->escaperMock = $this->getMockBuilder(Escaper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->escaperMock->method('escapeHtmlAttr')
+            ->willReturnCallback(fn($value) => htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'));
+
+        $this->propertyInterface = new Property($this->escaperMock);
+
         $this->adapterInterface = $this->getMockBuilder(AdapterInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->adapterInterface->expects($this->any())->method('getProperty')->willReturn($this->propertyInterface);
+
+        $this->adapterInterface
+            ->method('getProperty')
+            ->willReturn($this->propertyInterface);
     }
 }

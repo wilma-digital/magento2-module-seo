@@ -3,3 +3,4 @@ build
 composer.lock
 .claude/*
 Claude.md
+.phpunit.cache

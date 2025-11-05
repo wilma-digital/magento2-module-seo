@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 /**
  * Copyright © 2017 Stämpfli AG. All rights reserved.
  * @author marcel.hauri@staempfli.com
@@ -11,88 +13,152 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
 
 /**
- * Class Config
- * @package Staempfli\Seo\Model
+ * SEO configuration service
+ *
+ * Provides centralized access to all SEO module configuration values including
+ * site verifications, Twitter Card settings, and robots.txt content
  */
 class Config
 {
-    const XML_PATH_SEO_GOOGLE_SITE_VERIFICATION_CODE = 'seo/verifications/google';
-    const XML_PATH_SEO_BING_SITE_VERIFICATION_CODE = 'seo/verifications/bing';
-    const XML_PATH_SEO_PINTEREST_SITE_VERIFICATION_CODE = 'seo/verifications/pinterest';
-    const XML_PATH_SEO_YANDEX_SITE_VERIFICATION_CODE = 'seo/verifications/yandex';
-    const XML_PATH_SEO_TWITTER_DEFAULT_TYPE = 'seo/twitter_card/type';
-    const XML_PATH_SEO_TWITTER_DEFAULT_SITE = 'seo/twitter_card/site';
-    const XML_PATH_SEO_TWITTER_DEFAULT_CREATOR = 'seo/twitter_card/creator';
-    const XML_PATH_ROBOTS_CONTENT = 'seo/robots/content';
-    /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
+    private const XML_PATH_SEO_GOOGLE_SITE_VERIFICATION_CODE = 'seo/verifications/google';
+    private const XML_PATH_SEO_BING_SITE_VERIFICATION_CODE = 'seo/verifications/bing';
+    private const XML_PATH_SEO_PINTEREST_SITE_VERIFICATION_CODE = 'seo/verifications/pinterest';
+    private const XML_PATH_SEO_YANDEX_SITE_VERIFICATION_CODE = 'seo/verifications/yandex';
+    private const XML_PATH_SEO_TWITTER_DEFAULT_TYPE = 'seo/twitter_card/type';
+    private const XML_PATH_SEO_TWITTER_DEFAULT_SITE = 'seo/twitter_card/site';
+    private const XML_PATH_SEO_TWITTER_DEFAULT_CREATOR = 'seo/twitter_card/creator';
+    private const XML_PATH_ROBOTS_CONTENT = 'seo/robots/content';
 
     /**
-     * Config constructor.
-     * @param ScopeConfigInterface $scopeConfig
+     * Initialize dependencies
+     *
+     * @param ScopeConfigInterface $scopeConfig Scope configuration interface
      */
     public function __construct(
-        ScopeConfigInterface $scopeConfig
+        private readonly ScopeConfigInterface $scopeConfig,
     ) {
-        $this->scopeConfig = $scopeConfig;
     }
 
-    public function getGoogleSiteVerificationCode(): string
+    /**
+     * Get Google site verification code
+     *
+     * @param int|null $storeId Store ID for scope-specific configuration
+     * @return string Verification code or empty string
+     */
+    public function getGoogleSiteVerificationCode(?int $storeId = null): string
     {
-        return $this->getConfigValue(self::XML_PATH_SEO_GOOGLE_SITE_VERIFICATION_CODE);
+        return $this->getConfigValue(self::XML_PATH_SEO_GOOGLE_SITE_VERIFICATION_CODE, $storeId);
     }
 
-    public function getBingSiteVerificationCode(): string
+    /**
+     * Get Bing site verification code
+     *
+     * @param int|null $storeId Store ID for scope-specific configuration
+     * @return string Verification code or empty string
+     */
+    public function getBingSiteVerificationCode(?int $storeId = null): string
     {
-        return $this->getConfigValue(self::XML_PATH_SEO_BING_SITE_VERIFICATION_CODE);
+        return $this->getConfigValue(self::XML_PATH_SEO_BING_SITE_VERIFICATION_CODE, $storeId);
     }
 
-    public function getPinterestSiteVerificationCode(): string
+    /**
+     * Get Pinterest site verification code
+     *
+     * @param int|null $storeId Store ID for scope-specific configuration
+     * @return string Verification code or empty string
+     */
+    public function getPinterestSiteVerificationCode(?int $storeId = null): string
     {
-        return $this->getConfigValue(self::XML_PATH_SEO_PINTEREST_SITE_VERIFICATION_CODE);
+        return $this->getConfigValue(self::XML_PATH_SEO_PINTEREST_SITE_VERIFICATION_CODE, $storeId);
     }
 
-    public function getYandexSiteVerificationCode(): string
+    /**
+     * Get Yandex site verification code
+     *
+     * @param int|null $storeId Store ID for scope-specific configuration
+     * @return string Verification code or empty string
+     */
+    public function getYandexSiteVerificationCode(?int $storeId = null): string
     {
-        return $this->getConfigValue(self::XML_PATH_SEO_YANDEX_SITE_VERIFICATION_CODE);
+        return $this->getConfigValue(self::XML_PATH_SEO_YANDEX_SITE_VERIFICATION_CODE, $storeId);
     }
 
-    public function getDefaultTwitterCardType(): string
+    /**
+     * Get default Twitter Card type
+     *
+     * @param int|null $storeId Store ID for scope-specific configuration
+     * @return string Twitter Card type or empty string
+     */
+    public function getDefaultTwitterCardType(?int $storeId = null): string
     {
-        return $this->getConfigValue(self::XML_PATH_SEO_TWITTER_DEFAULT_TYPE);
+        return $this->getConfigValue(self::XML_PATH_SEO_TWITTER_DEFAULT_TYPE, $storeId);
     }
 
-    public function getDefaultTwitterCardSite(): string
+    /**
+     * Get default Twitter Card site handle
+     *
+     * @param int|null $storeId Store ID for scope-specific configuration
+     * @return string Twitter site handle or empty string
+     */
+    public function getDefaultTwitterCardSite(?int $storeId = null): string
     {
-        return $this->getConfigValue(self::XML_PATH_SEO_TWITTER_DEFAULT_SITE);
+        return $this->getConfigValue(self::XML_PATH_SEO_TWITTER_DEFAULT_SITE, $storeId);
     }
 
-    public function getDefaultTwitterCardCreator(): string
+    /**
+     * Get default Twitter Card creator handle
+     *
+     * @param int|null $storeId Store ID for scope-specific configuration
+     * @return string Twitter creator handle or empty string
+     */
+    public function getDefaultTwitterCardCreator(?int $storeId = null): string
     {
-        return $this->getConfigValue(self::XML_PATH_SEO_TWITTER_DEFAULT_CREATOR);
+        return $this->getConfigValue(self::XML_PATH_SEO_TWITTER_DEFAULT_CREATOR, $storeId);
     }
 
-    public function getRobotsContent(): string
+    /**
+     * Get robots.txt content from configuration
+     *
+     * @param int|null $storeId Store ID for scope-specific configuration
+     * @return string Robots.txt content or empty string
+     */
+    public function getRobotsContent(?int $storeId = null): string
     {
-        return $this->getConfigValue(self::XML_PATH_ROBOTS_CONTENT);
+        return $this->getConfigValue(self::XML_PATH_ROBOTS_CONTENT, $storeId);
     }
 
-    public function isActive(string $configPath): bool
+    /**
+     * Check if a configuration flag is active
+     *
+     * @param string $configPath Configuration path to check
+     * @param int|null $storeId Store ID for scope-specific configuration
+     * @return bool True if flag is set
+     */
+    public function isActive(string $configPath, ?int $storeId = null): bool
     {
         return $this->scopeConfig->isSetFlag(
             $configPath,
-            ScopeInterface::SCOPE_STORE
+            ScopeInterface::SCOPE_STORE,
+            $storeId,
         );
     }
 
-    private function getConfigValue(string $configPath) : string
+    /**
+     * Get configuration value for the specified path
+     *
+     * @param string $configPath Configuration path
+     * @param int|null $storeId Store ID for scope-specific configuration
+     * @return string Configuration value or empty string if not found
+     */
+    private function getConfigValue(string $configPath, ?int $storeId = null): string
     {
         $result = $this->scopeConfig->getValue(
             $configPath,
-            ScopeInterface::SCOPE_STORE
+            ScopeInterface::SCOPE_STORE,
+            $storeId,
         );
-        return $result ?? '';
+
+        return $result ? (string) $result : '';
     }
 }
+

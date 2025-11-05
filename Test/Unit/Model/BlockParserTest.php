@@ -21,7 +21,7 @@ final class BlockParserTest extends \PHPUnit\Framework\TestCase
     private $cmsBlock;
     private $blockRepository;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->cmsBlock = $this->getMockBuilder(\Magento\Cms\Model\Block::class)
             ->disableOriginalConstructor()

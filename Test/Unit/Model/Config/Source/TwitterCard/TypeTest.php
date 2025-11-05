@@ -10,16 +10,16 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Staempfli\Seo\Model\Config\Source\TwitterCard\Type;
 
 /**
- * @coversDefaultClass \Staempfli\Seo\Model\Adapter
+ * @coversDefaultClass \Staempfli\Seo\Model\Config\Source\TwitterCard\Type
  */
-final class AdapterTest extends \PHPUnit\Framework\TestCase
+final class TypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Type
      */
     private $type;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
         $this->type = $objectManager->getObject(Type::class);
@@ -27,7 +27,7 @@ final class AdapterTest extends \PHPUnit\Framework\TestCase
 
     public function testToOptionArray()
     {
-        $this->assertInstanceOf(\Magento\Framework\Option\ArrayInterface::class, $this->type);
+        $this->assertInstanceOf(\Magento\Framework\Data\OptionSourceInterface::class, $this->type);
         $this->assertCount(4, $this->type->toOptionArray());
         $option = current($this->type->toOptionArray());
         /** @var \Magento\Framework\Phrase $label */

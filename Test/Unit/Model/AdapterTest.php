@@ -21,7 +21,7 @@ final class AdapterTest extends \PHPUnit\Framework\TestCase
      */
     private $adapter;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $productAdapter = $this->getMockBuilder(Adapter\Product::class)
             ->disableOriginalConstructor()
@@ -51,6 +51,6 @@ final class AdapterTest extends \PHPUnit\Framework\TestCase
     public function testGetProperty()
     {
         $result = $this->adapter->getProperty();
-        $this->assertSame(null, $result->hasData());
+        $this->assertFalse($result->hasData());
     }
 }

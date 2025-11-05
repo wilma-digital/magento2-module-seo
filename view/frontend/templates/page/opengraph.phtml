@@ -1,0 +1,17 @@
+<?php
+
+declare(strict_types=1);
+
+use Staempfli\Seo\Block\OpenGraph;
+
+/**
+ * OpenGraph meta tags template
+ *
+ * @var OpenGraph $block
+ */
+
+$metaData = $block->getMetaData();
+
+if (!empty($metaData)): ?>
+<?= /* @noEscape */ $metaData ?>
+<?php endif; ?>

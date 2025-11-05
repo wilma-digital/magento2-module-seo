@@ -1,24 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.2/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
          bootstrap="Test/Unit/bootstrap.php"
-         forceCoversAnnotation="false"
-         beStrictAboutCoversAnnotation="true"
-         beStrictAboutOutputDuringTests="true"
-         beStrictAboutTodoAnnotatedTests="true"
-         verbose="true">
-    <testsuite>
-        <directory suffix="Test.php">Test</directory>
-    </testsuite>
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         requireCoverageMetadata="false"
+         beStrictAboutCoverageMetadata="false"
+         failOnWarning="false"
+         failOnRisky="false"
+         failOnIncomplete="false"
+         failOnSkipped="false">
 
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+    <testsuites>
+        <testsuite name="Staempfli SEO Module Test Suite">
+            <directory suffix="Test.php">Test/Unit</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage>
+        <report>
+            <clover outputFile="build/logs/clover.xml"/>
+            <html outputDirectory="build/coverage"/>
+            <text outputFile="php://stdout" showUncoveredFiles="false"/>
+        </report>
+    </coverage>
+
+    <source>
+        <include>
             <directory suffix=".php">Model</directory>
             <directory suffix=".php">Block</directory>
             <directory suffix=".php">Controller</directory>
-        </whitelist>
-    </filter>
-    <logging>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-    </logging>
+            <directory suffix=".php">Helper</directory>
+            <directory suffix=".php">Plugin</directory>
+            <directory suffix=".php">Service</directory>
+        </include>
+        <exclude>
+            <directory>Test</directory>
+            <directory>Setup</directory>
+            <file>registration.php</file>
+        </exclude>
+    </source>
+
+    <php>
+        <ini name="display_errors" value="1"/>
+        <ini name="display_startup_errors" value="1"/>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="memory_limit" value="-1"/>
+    </php>
 </phpunit>

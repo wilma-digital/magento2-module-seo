@@ -18,75 +18,75 @@ interface PropertyInterface
      * @param string $prefix
      * @return $this
      */
-    public function setPrefix(string $prefix);
+    public function setPrefix(string $prefix): self;
 
     /**
      * @param string $attributeName
      * @return $this
      */
-    public function setMetaAttributeName(string $attributeName);
+    public function setMetaAttributeName(string $attributeName): self;
 
     /**
      * @param string $title
      * @return $this
      */
-    public function setTitle(string $title);
+    public function setTitle(string $title): self;
 
     /**
      * @param string $description
      * @return $this
      */
-    public function setDescription(string $description);
+    public function setDescription(string $description): self;
 
     /**
      * @param string $url
      * @return $this
      */
-    public function setUrl(string $url);
+    public function setUrl(string $url): self;
 
     /**
      * @param string $image
      * @return $this
      */
-    public function setImage(string $image);
+    public function setImage(string $image): self;
 
     /**
      * @param string $imageAlt
      * @return $this
      */
-    public function setImageAlt(string $imageAlt);
+    public function setImageAlt(string $imageAlt): self;
 
     /**
      * @param string $key
-     * @param string|array $value
+     * @param string|array<string, mixed> $value
      * @param string $group
-     * @return string
+     * @return $this
      */
-    public function addProperty(string $key, $value, string $group = Property::DEFAULT_GROUP);
+    public function addProperty(string $key, string|array $value, string $group = Property::DEFAULT_GROUP): self;
 
     /**
      * @param string $key
      * @param string $group
-     * @return string
+     * @return string|array<string, mixed>
      */
-    public function getProperty(string $key, string $group = Property::DEFAULT_GROUP);
+    public function getProperty(string $key, string $group = Property::DEFAULT_GROUP): string|array;
 
     /**
      * @param string $key
      * @param string $group
      * @return $this
      */
-    public function removeProperty(string $key, string $group = Property::DEFAULT_GROUP);
+    public function removeProperty(string $key, string $group = Property::DEFAULT_GROUP): self;
 
     /**
      * @param string $group
      * @return string
      */
-    public function toHtml(string $group = Property::DEFAULT_GROUP);
+    public function toHtml(string $group = Property::DEFAULT_GROUP): string;
 
     /**
      * @param string $group
      * @return bool
      */
-    public function hasData(string $group = Property::DEFAULT_GROUP);
+    public function hasData(string $group = Property::DEFAULT_GROUP): bool;
 }

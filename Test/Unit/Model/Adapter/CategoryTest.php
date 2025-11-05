@@ -22,29 +22,32 @@ final class CategoryTest extends \PHPUnit\Framework\TestCase
      */
     private $category;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
         $blockRepository = $this->getMockBuilder(\Magento\Cms\Api\BlockRepositoryInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $blockParser = new BlockParser($blockRepository);
-        $propertyInterface = new Property();
+        $escaper = $this->getMockBuilder(\Magento\Framework\Escaper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $propertyInterface = new Property($escaper);
         $category = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
             ->disableOriginalConstructor()
             ->getMock();
         $category->expects($this->any())
             ->method('getData')
-            ->will($this->returnValue('test'));
+            ->willReturn('test');
         $category->expects($this->any())
             ->method('getImageUrl')
-            ->will($this->returnValue('http://example.com/test.png'));
+            ->willReturn('http://example.com/test.png');
         $registry = $this->getMockBuilder(\Magento\Framework\Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $registry->expects($this->once())
             ->method('registry')
-            ->will($this->returnValue($category));
+            ->willReturn($category);
 
         $this->category = $objectManager->getObject(
             Category::class,
@@ -59,6 +62,6 @@ final class CategoryTest extends \PHPUnit\Framework\TestCase
     public function testGetProperty()
     {
         $result = $this->category->getProperty();
-        $this->assertSame(null, $result->hasData());
+        $this->assertFalse($result->hasData());
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
  * @author marcel.hauri@staempfli.com
  * @author avs@integer-net.de
  */
+
 namespace Staempfli\Seo\Test\Unit\Block;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -23,43 +24,40 @@ final class HrefLangTest extends AbstractBlockSetup
      */
     private $block;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $alternativeUrlSwitcherMock = $this->getMockBuilder(AlternativeUrlService::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $alternativeUrlSwitcherMock->expects($this->any())
+            ->method('getAlternativeUrl')
+            ->willReturn('');
 
-        $storeMock = $this->getMockBuilder(StoreInterface::class)
+        $storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
-            ->setMethods(['isActive'])
-            ->getMockForAbstractClass();
+            ->getMock();
         $storeMock->method('getId')->willReturn(1);
-        $storeMock->method('isActive')->willReturn(true);
-
-        $store2Mock = $this->getMockBuilder(StoreInterface::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['isActive'])
-            ->getMockForAbstractClass();
-        $store2Mock->method('getId')->willReturn(2);
         $storeMock->method('isActive')->willReturn(true);
 
         $storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $storeManagerMock->method('getStores')->willReturn([$storeMock, $store2Mock]);
+        $storeManagerMock->method('getStores')->willReturn([$storeMock]);
         $storeManagerMock->method('getStore')->willReturn($storeMock);
 
         $scopeConfigBlock = $this->getMockBuilder(ScopeConfigInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $scopeConfigBlock->method('isSetFlag')->willReturn(false);
+        $scopeConfigBlock->method('getValue')->willReturn('en_US');
 
         $this->block = $this->objectManager->getObject(
             HrefLang::class,
             [
                 'context' => $this->context,
+                'alternativeUrlService' => $alternativeUrlSwitcherMock,
                 '_storeManager' => $storeManagerMock,
                 '_scopeConfig' => $scopeConfigBlock,
             ]

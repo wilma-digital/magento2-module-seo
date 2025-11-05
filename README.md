@@ -134,4 +134,4 @@ Updated and maintained by [WilMa Digital GmbH](https://wilma.tech)
 ## Copyright
 ---------
 (c) 2017, Stämpfli AG
-(c) 2025,1, t WilMa Digital GmbH
+(c) 2025, WilMa Digital GmbH

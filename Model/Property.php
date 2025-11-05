@@ -59,8 +59,7 @@ final class Property implements PropertyInterface
      */
     public function __construct(
         private readonly Escaper $escaper,
-    ) {
-    }
+    ) {}
 
     /**
      * Set prefix for meta property names (e.g., 'og:' for OpenGraph)
@@ -376,5 +375,16 @@ final class Property implements PropertyInterface
         $this->properties[$group] = self::DEFAULT_PROPERTIES;
         $this->prefix = self::DEFAULT_PREFIX;
         $this->attributeName = self::DEFAULT_ATTRIBUTE_NAME;
+    }
+
+    /**
+     * Set title meta property
+     *
+     * @param string $logo Logo URL
+     * @return $this
+     */
+    public function setLogo(string $logo): self
+    {
+        return $this->addProperty('logo', $logo);
     }
 }

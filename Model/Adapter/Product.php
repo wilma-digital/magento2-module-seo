@@ -70,6 +70,7 @@ class Product implements AdapterInterface
 
         $this->property->addProperty('og:type', 'og:product', 'product');
         $this->property->setTitle((string) $product->getName());
+        $this->property->setLogo($this->getLayout()->getBlock('logo')->getLogoSrc() ?: '');
 
         $this->setProductDescription($product);
         $this->setProductImage($product);

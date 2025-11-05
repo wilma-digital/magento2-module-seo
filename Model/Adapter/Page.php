@@ -49,6 +49,7 @@ class Page implements AdapterInterface
     {
         if ($this->page->getId()) {
             $this->property->setTitle((string) $this->page->getTitle());
+            $this->property->setLogo($this->getLayout()->getBlock('logo')->getLogoSrc() ?: '');
             $this->property->setDescription($this->getCleanDescription());
             $this->property->setUrl((string) $this->url->getUrl($this->page->getIdentifier()));
             $this->property->addProperty('item', $this->page->getData(), Property::META_DATA_GROUP);

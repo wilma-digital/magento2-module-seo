@@ -33,6 +33,12 @@ interface PropertyInterface
     public function setTitle(string $title): self;
 
     /**
+     * @param string $logo
+     * @return $this
+     */
+    public function setLogo(string $logo): self;
+
+    /**
      * @param string $description
      * @return $this
      */

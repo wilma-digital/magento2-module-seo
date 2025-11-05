@@ -54,6 +54,7 @@ class Category implements AdapterInterface
         if ($category) {
             $this->property->setTitle((string) $category->getName());
             $this->property->setUrl((string) $category->getUrl());
+            $this->property->setLogo($this->getLayout()->getBlock('logo')->getLogoSrc() ?: '');
 
             foreach ($this->messageAttributes as $messageAttribute) {
                 if ($category->getData($messageAttribute)) {

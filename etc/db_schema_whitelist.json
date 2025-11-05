@@ -1,0 +1,9 @@
+{
+    "cms_page": {
+        "column": {
+            "og_title": true,
+            "og_description": true,
+            "og_image": true
+        }
+    }
+}

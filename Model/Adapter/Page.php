@@ -27,11 +27,11 @@ class Page implements AdapterInterface
      * @param Config $config
      */
     public function __construct(
-        private readonly PropertyInterface          $property,
-        private readonly CmsPage $page,
-        private readonly UrlInterface           $url,
-        private readonly FilterProvider            $filterProvider,
-        private readonly Config                     $config,
+        private readonly PropertyInterface $property,
+        private readonly CmsPage           $page,
+        private readonly UrlInterface      $url,
+        private readonly FilterProvider    $filterProvider,
+        private readonly Config            $config,
     ) {}
 
     /**

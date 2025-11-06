@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 /**
- * Copyright © 2017 Stämpfli AG. All rights reserved.
- * @author marcel.hauri@staempfli.com
+ * Copyright © 2025 WilMa Digital GmbH. All rights reserved.
+ * @author andreas.mautz@wilma.tech
  */
 
 namespace Staempfli\Seo\Plugin\View\Page\Config;

@@ -90,7 +90,7 @@ The module includes a `phpunit.xml` configured for PHPUnit 12+:
 - Schema: PHPUnit 11.0
 - Bootstrap: Test/Unit/bootstrap.php
 - Coverage: HTML and Clover reports
-- Source: Model, Block, Controller, Helper, Plugin, Service directories
+- Source: Model, Block, Controller, Plugin, Service directories
 ```
 
 ## Code Coverage

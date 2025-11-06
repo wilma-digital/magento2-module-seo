@@ -30,7 +30,6 @@
             <directory suffix=".php">Model</directory>
             <directory suffix=".php">Block</directory>
             <directory suffix=".php">Controller</directory>
-            <directory suffix=".php">Helper</directory>
             <directory suffix=".php">Plugin</directory>
             <directory suffix=".php">Service</directory>
         </include>

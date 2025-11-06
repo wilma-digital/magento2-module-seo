@@ -11,6 +11,7 @@ namespace Staempfli\Seo\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * SEO configuration service
@@ -29,13 +30,17 @@ class Config
     private const XML_PATH_SEO_TWITTER_DEFAULT_CREATOR = 'seo/twitter_card/creator';
     private const XML_PATH_ROBOTS_CONTENT = 'seo/robots/content';
 
+    private const XML_PATH_LOGO = 'design/header/logo_src';
+
     /**
      * Initialize dependencies
      *
      * @param ScopeConfigInterface $scopeConfig Scope configuration interface
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         private readonly ScopeConfigInterface $scopeConfig,
+        private readonly StoreManagerInterface $storeManager,
     ) {
     }
 
@@ -159,6 +164,21 @@ class Config
         );
 
         return $result ? (string) $result : '';
+    }
+
+    public function getLogoUrl(): string
+    {
+        $result = $this->scopeConfig->getValue(
+            self::XML_PATH_LOGO,
+            ScopeInterface::SCOPE_STORE
+        );
+
+        if ($result) {
+            $store = $this->storeManager->getStore();
+            $result = $store->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'logo/' . $result;
+        }
+
+        return $result ?: '';
     }
 }
 

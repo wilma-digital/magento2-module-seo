@@ -7,16 +7,19 @@ declare(strict_types=1);
 
 namespace Staempfli\Seo\Model;
 
+use Magento\Framework\App\Config\ScopeConfigInterface;
+
 class Adapter implements AdapterInterface
 {
     /**
      * @var array
      */
-    private $adapters;
+    private array $adapters;
+
     /**
      * @var PropertyInterface
      */
-    private $property;
+    private PropertyInterface $property;
 
     public function __construct(
         PropertyInterface $property,

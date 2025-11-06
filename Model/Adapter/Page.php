@@ -12,85 +12,42 @@ use Magento\Cms\Model\Page as CmsPage;
 use Magento\Cms\Model\Template\FilterProvider;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\UrlInterface;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\StoreManagerInterface;
 use Staempfli\Seo\Model\AdapterInterface;
+use Staempfli\Seo\Model\Config;
 use Staempfli\Seo\Model\Property;
 use Staempfli\Seo\Model\PropertyInterface;
 
 class Page implements AdapterInterface
 {
     /**
-     * @var PropertyInterface
+     * @param PropertyInterface $property
+     * @param CmsPage $page
+     * @param UrlInterface $url
+     * @param FilterProvider $filterProvider
+     * @param Config $config
      */
-    private PropertyInterface $property;
-    /**
-     * @var CmsPage
-     */
-    private CmsPage $page;
-    /**
-     * @var UrlInterface
-     */
-    private UrlInterface $url;
-    /**
-     * @var FilterProvider
-     */
-    private FilterProvider $filterProvider;
-
-    /**
-     * @var ScopeConfigInterface
-     */
-    private ScopeConfigInterface $scopeConfig;
-
-    /**
-     * @var StoreManagerInterface
-     */
-    private StoreManagerInterface $storeManager;
-
-    private const XML_PATH_LOGO = 'design/header/logo_src';
-
     public function __construct(
-        CmsPage               $page,
-        UrlInterface          $url,
-        FilterProvider        $filterProvider,
-        PropertyInterface     $property,
-        ScopeConfigInterface  $scopeConfig,
-        StoreManagerInterface $storeManager,
-    ) {
-        $this->property = $property;
-        $this->page = $page;
-        $this->url = $url;
-        $this->filterProvider = $filterProvider;
-        $this->scopeConfig = $scopeConfig;
-        $this->storeManager = $storeManager;
-    }
+        private readonly PropertyInterface          $property,
+        private readonly CmsPage $page,
+        private readonly UrlInterface           $url,
+        private readonly FilterProvider            $filterProvider,
+        private readonly Config                     $config,
+    ) {}
 
+    /**
+     * @return PropertyInterface
+     * @throws Exception
+     */
     public function getProperty(): PropertyInterface
     {
         if ($this->page->getId()) {
             $this->property->setTitle((string)$this->page->getTitle());
-            $this->property->setLogo($this->getLogoUrl());
+            $this->property->setLogo($this->config->getLogoUrl());
             $this->property->setDescription($this->getCleanDescription());
             $this->property->setUrl((string)$this->url->getUrl($this->page->getIdentifier()));
             $this->property->addProperty('item', $this->page->getData(), Property::META_DATA_GROUP);
         }
         return $this->property;
-    }
-
-    public function getLogoUrl(): string
-    {
-        $logoUrl = '';
-        $logoPath = $this->scopeConfig->getValue(
-            self::XML_PATH_LOGO,
-            ScopeInterface::SCOPE_STORE,
-        );
-
-        if ($logoPath) {
-            $store = $this->storeManager->getStore();
-            $logoUrl = $store->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'logo/' . $logoPath;
-        }
-
-        return $logoUrl;
     }
 
     /**

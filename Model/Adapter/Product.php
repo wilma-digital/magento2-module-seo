@@ -17,6 +17,7 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Psr\Log\LoggerInterface;
 use Staempfli\Seo\Model\AdapterInterface;
+use Staempfli\Seo\Model\Config;
 use Staempfli\Seo\Model\Property;
 use Staempfli\Seo\Model\PropertyInterface;
 
@@ -45,15 +46,16 @@ class Product implements AdapterInterface
      * @param ProductRepositoryInterface $productRepository Product repository
      * @param RequestInterface $request HTTP request for getting product ID
      * @param LoggerInterface $logger Logger for error handling
+     * @param Config $config
      */
     public function __construct(
-        private readonly PropertyInterface $property,
-        private readonly ImageBuilder $imageBuilder,
+        private readonly PropertyInterface          $property,
+        private readonly ImageBuilder               $imageBuilder,
         private readonly ProductRepositoryInterface $productRepository,
-        private readonly RequestInterface $request,
-        private readonly LoggerInterface $logger,
-    ) {
-    }
+        private readonly RequestInterface           $request,
+        private readonly LoggerInterface            $logger,
+        private readonly Config                     $config,
+    ) {}
 
     /**
      * Get property object populated with product data
@@ -69,14 +71,14 @@ class Product implements AdapterInterface
         }
 
         $this->property->addProperty('og:type', 'og:product', 'product');
-        $this->property->setTitle((string) $product->getName());
-        $this->property->setLogo($this->getLayout()->getBlock('logo')->getLogoSrc() ?: '');
+        $this->property->setTitle((string)$product->getName());
+        $this->property->setLogo($this->config->getLogoUrl());
 
         $this->setProductDescription($product);
         $this->setProductImage($product);
 
-        $this->property->setUrl((string) $product->getProductUrl());
-        $this->property->addProperty('product:price:amount', (string) $product->getFinalPrice(), 'product');
+        $this->property->setUrl((string)$product->getProductUrl());
+        $this->property->addProperty('product:price:amount', (string)$product->getFinalPrice(), 'product');
         $this->property->addProperty('item', $product->getData(), Property::META_DATA_GROUP);
 
         return $this->property;
@@ -89,7 +91,7 @@ class Product implements AdapterInterface
      */
     private function getCurrentProduct(): ?ProductInterface
     {
-        $productId = (int) $this->request->getParam('id');
+        $productId = (int)$this->request->getParam('id');
 
         if (!$productId) {
             return null;
@@ -119,7 +121,7 @@ class Product implements AdapterInterface
             $value = $product->getData($messageAttribute);
 
             if ($value) {
-                $this->property->setDescription((string) $value);
+                $this->property->setDescription((string)$value);
                 break;
             }
         }
@@ -135,7 +137,7 @@ class Product implements AdapterInterface
     {
         if ($product->getImage() && $product->getImage() !== 'no_selection') {
             $imageUrl = $this->getImage($product, 'product_base_image')->getImageUrl();
-            $this->property->setImage((string) $imageUrl);
+            $this->property->setImage((string)$imageUrl);
         }
     }
 
@@ -149,9 +151,10 @@ class Product implements AdapterInterface
      */
     private function getImage(
         ProductInterface $product,
-        string $imageId,
-        array $attributes = [],
-    ): Image {
+        string           $imageId,
+        array            $attributes = [],
+    ): Image
+    {
         return $this->imageBuilder
             ->setProduct($product)
             ->setImageId($imageId)

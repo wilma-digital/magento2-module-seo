@@ -10,7 +10,7 @@ namespace Staempfli\Seo\Model;
 interface AdapterInterface
 {
     /**
-     * @return \Staempfli\Seo\Model\Property
+     * @return Property
      */
     public function getProperty();
 }

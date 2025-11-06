@@ -7,9 +7,11 @@ declare(strict_types=1);
 
 namespace Staempfli\Seo\Model\Adapter;
 
+use Magento\Catalog\Model\Category as MagentoCategory;
+use Magento\Framework\Registry;
 use Staempfli\Seo\Model\AdapterInterface;
-use \Magento\Framework\Registry;
 use Staempfli\Seo\Model\BlockParser;
+use Staempfli\Seo\Model\Config;
 use Staempfli\Seo\Model\Property;
 use Staempfli\Seo\Model\PropertyInterface;
 
@@ -18,43 +20,37 @@ class Category implements AdapterInterface
     /**
      * @var array
      */
-    private $messageAttributes = [
+    private array $messageAttributes = [
         'meta_description',
         'description'
     ];
-    /**
-     * @var Registry
-     */
-    private $registry;
-    /**
-     * @var PropertyInterface
-     */
-    private $property;
-    /**
-     * @var BlockParser
-     */
-    private $blockParser;
 
+    /**
+     * @param PropertyInterface $property
+     * @param BlockParser $blockParser
+     * @param Registry $registry
+     * @param Config $config
+     */
     public function __construct(
-        PropertyInterface $property,
-        BlockParser $blockParser,
-        Registry $registry
-    ) {
-        $this->registry = $registry;
-        $this->property = $property;
-        $this->blockParser = $blockParser;
-    }
+        private readonly Registry          $registry,
+        private readonly PropertyInterface $property,
+        private readonly BlockParser       $blockParser,
+        private readonly Config            $config,
+    ) {}
 
-    public function getProperty() : PropertyInterface
+    /**
+     * @return PropertyInterface
+     */
+    public function getProperty(): PropertyInterface
     {
         /**
-         * @var $category \Magento\Catalog\Model\Category
+         * @var $category MagentoCategory
          */
         $category = $this->registry->registry('current_category');
         if ($category) {
-            $this->property->setTitle((string) $category->getName());
-            $this->property->setUrl((string) $category->getUrl());
-            $this->property->setLogo($this->getLayout()->getBlock('logo')->getLogoSrc() ?: '');
+            $this->property->setTitle((string)$category->getName());
+            $this->property->setUrl((string)$category->getUrl());
+            $this->property->setLogo($this->config->getLogoUrl());
 
             foreach ($this->messageAttributes as $messageAttribute) {
                 if ($category->getData($messageAttribute)) {
@@ -65,13 +61,13 @@ class Category implements AdapterInterface
             if ($category->hasLandingPage() && !$this->property->getProperty('description')) {
                 $this->property->setDescription(
                     $this->blockParser->getBlockContentById(
-                        (int) $category->getLandingPage()
+                        (int)$category->getLandingPage()
                     )
                 );
             }
 
             if ($category->getImageUrl()) {
-                $this->property->setImage((string) $category->getImageUrl());
+                $this->property->setImage((string)$category->getImageUrl());
             }
             $this->property->addProperty('item', $category->getData(), Property::META_DATA_GROUP);
         }

@@ -7,9 +7,13 @@ declare(strict_types=1);
 
 namespace Staempfli\Seo\Model\Adapter;
 
+use Exception;
 use Magento\Cms\Model\Page as CmsPage;
 use Magento\Cms\Model\Template\FilterProvider;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\UrlInterface;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use Staempfli\Seo\Model\AdapterInterface;
 use Staempfli\Seo\Model\Property;
 use Staempfli\Seo\Model\PropertyInterface;
@@ -33,55 +37,88 @@ class Page implements AdapterInterface
      */
     private FilterProvider $filterProvider;
 
+    /**
+     * @var ScopeConfigInterface
+     */
+    private ScopeConfigInterface $scopeConfig;
+
+    /**
+     * @var StoreManagerInterface
+     */
+    private StoreManagerInterface $storeManager;
+
+    private const XML_PATH_LOGO = 'design/header/logo_src';
+
     public function __construct(
-        CmsPage $page,
-        UrlInterface $url,
-        FilterProvider $filterProvider,
-        PropertyInterface $property
+        CmsPage               $page,
+        UrlInterface          $url,
+        FilterProvider        $filterProvider,
+        PropertyInterface     $property,
+        ScopeConfigInterface  $scopeConfig,
+        StoreManagerInterface $storeManager,
     ) {
         $this->property = $property;
         $this->page = $page;
         $this->url = $url;
         $this->filterProvider = $filterProvider;
+        $this->scopeConfig = $scopeConfig;
+        $this->storeManager = $storeManager;
     }
 
-    public function getProperty() : PropertyInterface
+    public function getProperty(): PropertyInterface
     {
         if ($this->page->getId()) {
-            $this->property->setTitle((string) $this->page->getTitle());
-            $this->property->setLogo($this->getLayout()->getBlock('logo')->getLogoSrc() ?: '');
+            $this->property->setTitle((string)$this->page->getTitle());
+            $this->property->setLogo($this->getLogoUrl());
             $this->property->setDescription($this->getCleanDescription());
-            $this->property->setUrl((string) $this->url->getUrl($this->page->getIdentifier()));
+            $this->property->setUrl((string)$this->url->getUrl($this->page->getIdentifier()));
             $this->property->addProperty('item', $this->page->getData(), Property::META_DATA_GROUP);
         }
         return $this->property;
+    }
+
+    public function getLogoUrl(): string
+    {
+        $logoUrl = '';
+        $logoPath = $this->scopeConfig->getValue(
+            self::XML_PATH_LOGO,
+            ScopeInterface::SCOPE_STORE,
+        );
+
+        if ($logoPath) {
+            $store = $this->storeManager->getStore();
+            $logoUrl = $store->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'logo/' . $logoPath;
+        }
+
+        return $logoUrl;
     }
 
     /**
      * Get clean description by stripping HTML and PageBuilder content
      *
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
-    private function getCleanDescription(): string
+    private
+    function getCleanDescription(): string
     {
         // First check if there's a custom og_description
         $ogDescription = $this->page->getData('og_description');
         if (!empty($ogDescription)) {
-            return $this->cleanText((string) $ogDescription);
+            return $this->cleanText((string)$ogDescription);
         }
 
         // Check for meta_description
         $metaDescription = $this->page->getMetaDescription();
         if (!empty($metaDescription)) {
-            return $this->cleanText((string) $metaDescription);
+            return $this->cleanText((string)$metaDescription);
         }
 
         // Fall back to page content
-        $content = (string) $this->page->getContent();
+        $content = (string)$this->page->getContent();
 
         // Process any dynamic content/variables first
-        $filteredContent = (string) $this->filterProvider->getBlockFilter()->filter($content);
+        $filteredContent = (string)$this->filterProvider->getBlockFilter()->filter($content);
 
         return $this->cleanText($filteredContent);
     }
@@ -92,7 +129,8 @@ class Page implements AdapterInterface
      * @param string $text
      * @return string
      */
-    private function cleanText(string $text): string
+    private
+    function cleanText(string $text): string
     {
         // Remove script tags with their content
         $text = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $text);
